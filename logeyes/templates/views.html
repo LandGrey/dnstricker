@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>接收记录 - logeyes</title>
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/main.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <ul class="nav nav-tabs">
+          <li role="presentation" {% ifequal logtype 'dns'%}class="active"{% endifequal%}><a href="/?logtype=dns">Dns记录</a></li>
+          <li role="presentation" {% ifequal logtype 'web'%}class="active"{% endifequal%}><a href="/?logtype=web">Web记录</a></li>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout/">退出</a></li>
+          </ul>
+        </ul>
+        {% ifequal logtype 'dns'%}
+        <div class="table-responsive">
+            <table class="table table-striped">
+
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>接收时间</th>
+                  <th>来源地址</th>
+                  <th>查询主机</th>
+                  <th>记录类型</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for dnslog in dnslogs %}
+                <tr>
+                <th scope="row">{{dnslog.id}}</th>
+                <td>{{ dnslog.log_time|date:'Y-m-d H:i:s' }}</td>
+                <td>{{ dnslog.client_ip }}:{{ dnslog.client_port }}</td>
+                <td>{{ dnslog.query_host }}</td>
+                <td>{{ dnslog.record_type }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
+
+            <nav>
+              <ul class="pagination">
+                <li><a class="btn btn-default" href="/?del=dns" role="button">clear</a></li>
+                {% ifnotequal dnspage 1%}
+                <li>
+                  <a href="/?logtype=dns&dnspage={{dnspage | add:-1}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                {% endifnotequal%}
+                {% for range in pagerange %}
+                <li><a href="/?logtype=dns&dnspage={{range}}">{{range}}</a></li>
+                {% endfor %}
+                {% ifnotequal dnspage numpages%}
+                <li>
+                  <a href="/?logtype=dns&dnspage={{dnspage|add:1}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+                {% endifnotequal%}
+              </ul>
+            </nav>
+
+        </div>
+        {% endifequal%}
+
+        {% ifequal logtype 'web'%}
+        <div class="table-responsive">
+            <table class="table table-striped">
+
+              <thead>
+                <tr>
+                  <th style=" white-space:nowrap">ID</th>
+                  <th style=" white-space:nowrap">接收时间</th>
+                  <th style=" white-space:nowrap">来源地址</th>
+                  <th style=" white-space:nowrap">请求主机</th>
+                  <th style=" white-space:nowrap">请求方法</th>
+                  <th style=" white-space:nowrap">请求路径</th>
+                  <th style=" white-space:nowrap">UA</th>
+                  <th style=" white-space:nowrap">Referer</th>                  
+                  <th style=" white-space:nowrap">Cookie</th>
+                  <th style=" white-space:nowrap">XFF</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for weblog in weblogs %}
+                <tr>
+                <th scope="row">{{weblog.id}}</th>
+                <td style=" white-space:nowrap">{{ weblog.log_time|date:'Y-m-d H:i:s' }}</td>
+                <td style=" white-space:nowrap">{{ weblog.remote_addr }}</td>
+                <td style=" white-space:nowrap">{{ weblog.host }}</td>
+                <td style=" white-space:nowrap">{{ weblog.method }}</td>
+                <td style=" white-space:nowrap">{{ weblog.path }}</td>
+                <td style=" white-space:nowrap">{{ weblog.http_user_agent }}</td>
+                <td style=" white-space:nowrap">{{ weblog.http_referer }}</td>
+                <td style=" white-space:nowrap">{{ weblog.http_cookie }}</td>
+                <td style=" white-space:nowrap">{{ weblog.http_x_forwarded_for }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
+
+            <nav class="center-block">
+              <ul class="pagination">
+                <li><a class="btn btn-default" href="/?del=web" role="button">clear</a></li>
+                {% ifnotequal webpage 1%}
+                <li>
+                  <a href="/?logtype=web&webpage={{webpage | add:-1}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                {% endifnotequal%}
+                {% for range in pagerange %}
+                <li><a href="/?logtype=web&webpage={{range}}">{{range}}</a></li>
+                {% endfor %}
+                {% ifnotequal webpage numpages%}
+                <li>
+                  <a href="/?logtype=web&webpage={{dnspage|add:1}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+                {% endifnotequal%}
+              </ul>
+            </nav>
+        </div>
+        {% endifequal%}
+
+        <div class="bs" data-example-id="hoverable-table">
+
+        <textarea class="form-control" rows="8" disabled>
+        您的子域名:{{userdomain}}
+
+            API 格式: http://{{admindomain}}/api/{logtype}/{{udomain}}/{hashstr}/
+            logtype: dns/web
+            hashstr: 三级域名字符串
+
+        如判断 test.{{userdomain}} 是否有dns解析记录,请求 http://{{admindomain}}/api/dns/{{udomain}}/test/
+        </textarea>
+        </div>
+    </div>
+</body>
+</html>
