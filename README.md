@@ -2,7 +2,7 @@
 
 ```
 低配版dnslog平台, 根据 https://github.com/BugScanTeam/DNSLog 修改而来;
-增加了Dns记录来源地址、Web记录来源地址的端口、请求方法、Cookie、Referer、X-Forwarded-For;
+增加了Dns记录来源地址、Web记录的请求方法、Cookie、Referer、X-Forwarded-For;
 以后有时间增加更多功能的时候,也会更新至此.
 ```
 
@@ -52,11 +52,11 @@ pip
 1. 创建web根目录/path/to/web/logeyes/, 将logeyes目录中所有文件拷贝进去;
 2. /path/to/web/logeyes/dnslog/setting.py文件, 修改下SECRET_KEY的值, 里面所有的test.com、mid.com、2.2.2.2替换为第一步的实际资源;
 3. 目录切换到/path/to/web/logeyes/下,执行命令:
-   pip install -r requirements.txt		    // 安装django
-   python manage.py migrate				    // 生成sqlite3数据库和表
-   python manage.py createsuperuser         // 创建自己的后台管理用户名和密码
-   python manage.py makemigrations		    // 记录数据库数据更改
-   python manage.py migrate				    // 确认更改
+   pip install -r requirements.txt            // 安装django
+   python manage.py migrate                   // 生成sqlite3数据库和表
+   python manage.py createsuperuser           // 创建自己的后台管理用户名和密码
+   python manage.py makemigrations            // 记录数据库数据更改
+   python manage.py migrate                   // 确认更改
 4. 修改/path/to/web/logeyes/nginx.conf文件中的access_log和error_log的存储位置, 将"web_root_path"替换为实际的web根目录;
 5. 参考/path/to/web/logeyes/nginx.conf, 修改自己的nginx配置文件, 或直接用/path/to/web/logeyes/nginx.conf覆盖系统原始的nginx.conf文件;
 ```
